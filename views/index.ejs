@@ -1,37 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header') -%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>todolist</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
+<div class="box" id="heading">
+    <!-- The day -->
+    <h1> <%= listTitle %> </h1>
+</div>
 
-<body>
-
-    <div class="box" id="heading">
-        <!-- The day -->
-        <h1> <%= day %> </h1>
+<div class="box">
+    <!-- from item app.js -->
+    <% for( let i = 0; i < items.length; i++ ) { %>
+    <div class="item">
+        <input type="checkbox">
+        <p> <%= items[i] %> </p>
     </div>
+    <% } %>
 
-    <div class="box">
-        <!-- from item app.js -->
-        <% for( let i = 0; i < items.length; i++ ) { %>
-        <div class="item">
-            <p> <%= items[i] %> </p>
-        </div>
-        <% } %>
+    <!-- Form -->
+    <form class="item" action="/" method="post">
+        <input type="text" name="newItem" placeholder="New Item">
+        <button type="submit" name="list" value=<%= listTitle %>>+</button>
+    </form>
 
-        <!-- Form -->
-        <form class="item" action="/" method="post">
-            <input type="text" name="newItem" placeholder="New Item">
-            <button type="submit" name="button">+</button>
-        </form>
+</div>
 
-    </div>
-
-</body>
-
-</html>
+<%- include('footer') -%>

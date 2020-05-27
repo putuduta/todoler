@@ -2,11 +2,15 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+//call the date module
+const date = require(__dirname + '/date.js');
+
 const app = express();
 const port = 3000;
 
 //array for the item
 let items = ['Buy Food', 'Cook Food', 'Eat Food'];
+let workItems = [];
 
 //set the ejs
 app.set('view engine', 'ejs');
@@ -22,20 +26,11 @@ app.use(express.static('public'));
 
 app.get('/', (req, res) => {
 
-    //day function
-    let today = new Date();
-
-    let option = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
-    };
-
-    let day = today.toLocaleDateString('en-UK', option);
-
+    //call function on the date module
+    let day = date.getDate();
     //passing to ejs
     res.render('index', {
-        day: day,
+        listTitle: day,
         items: items
     });
 
@@ -43,12 +38,29 @@ app.get('/', (req, res) => {
 
 //post function
 app.post('/', (req, res) => {
+
     //grab the value when user type
     let item = req.body.newItem;
-    //push it to array
-    items.push(item);
-    //scope
-    res.redirect('/');
+
+    if (req.body.list === 'Work') {
+        workItems.push(item);
+        res.redirect('/work');
+    } else {
+        //push it to array
+        items.push(item);
+        res.redirect('/');
+    }
+
 });
+
+app.get('/work', (req, res) => {
+
+    res.render('index', {
+        listTitle: 'Work List',
+        items: workItems
+    });
+
+});
+
 
 app.listen(port, () => console.log('Server started on port 3000'));
