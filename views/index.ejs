@@ -6,24 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>todolist</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
-    <!-- The day -->
-    <h1> <%= day %> </h1>
 
-    <ul>
+    <div class="box" id="heading">
+        <!-- The day -->
+        <h1> <%= day %> </h1>
+    </div>
+
+    <div class="box">
         <!-- from item app.js -->
         <% for( let i = 0; i < items.length; i++ ) { %>
-            <li> <%= items[i] %> </li>
+        <div class="item">
+            <p> <%= items[i] %> </p>
+        </div>
         <% } %>
-    </ul>
 
-    <!-- Form -->
-    <form action="/" method="post">
-        <input type="text" name="newItem">
-        <button type="submit" name="button">Add</button>
-    </form>
+        <!-- Form -->
+        <form class="item" action="/" method="post">
+            <input type="text" name="newItem" placeholder="New Item">
+            <button type="submit" name="button">+</button>
+        </form>
+
+    </div>
 
 </body>
 

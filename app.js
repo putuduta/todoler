@@ -6,7 +6,7 @@ const app = express();
 const port = 3000;
 
 //array for the item
-var items = ['Buy Food', 'Cook Food', 'Eat Food'];
+let items = ['Buy Food', 'Cook Food', 'Eat Food'];
 
 //set the ejs
 app.set('view engine', 'ejs');
@@ -16,19 +16,22 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+//so we can use the css and all in the public folder
+app.use(express.static('public'));
+
 
 app.get('/', (req, res) => {
 
     //day function
-    var today = new Date();
+    let today = new Date();
 
-    var option = {
+    let option = {
         weekday: 'long',
         day: 'numeric',
         month: 'long'
     };
 
-    var day = today.toLocaleDateString('en-UK', option);
+    let day = today.toLocaleDateString('en-UK', option);
 
     //passing to ejs
     res.render('index', {
@@ -41,7 +44,7 @@ app.get('/', (req, res) => {
 //post function
 app.post('/', (req, res) => {
     //grab the value when user type
-    var item = req.body.newItem;
+    let item = req.body.newItem;
     //push it to array
     items.push(item);
     //scope
