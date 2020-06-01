@@ -2,15 +2,16 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 //call the date module
-const date = require(__dirname + '/date.js');
+
 
 const app = express();
 const port = 3000;
 
 //array for the item
-let items = ['Buy Food', 'Cook Food', 'Eat Food'];
-let workItems = [];
+// let items = ['Buy Food', 'Cook Food', 'Eat Food'];
+// let workItems = [];
 
 //set the ejs
 app.set('view engine', 'ejs');
@@ -23,15 +24,58 @@ app.use(bodyParser.urlencoded({
 //so we can use the css and all in the public folder
 app.use(express.static('public'));
 
+// Connect to mongodb
+mongoose.connect('mongodb://localhost:27017/todolistDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const itemsScheema = {
+    name: String
+};
+
+const Item = mongoose.model('Item', itemsScheema);
+
+const item1 = new Item({
+    name: "Welcome to  your todolist!"
+});
+
+const item2 = new Item({
+    name: "Hit the + button to add a new item."
+});
+
+const item3 = new Item({
+    name: "<-- Hit this to delete an item."
+});
+
+const defaultItems = [item1, item2, item3];
+
 
 app.get('/', (req, res) => {
 
-    //call function on the date module
-    let day = date.getDate();
-    //passing to ejs
-    res.render('index', {
-        listTitle: day,
-        items: items
+    Item.find({}, (err, foundItems) => {
+
+        if (foundItems.length === 0) {
+
+            Item.insertMany(defaultItems, (err) => {
+                if (err) {
+                    console.log(err);
+
+                } else {
+                    console.log('Succesfully insert the default');
+
+                }
+            });
+
+            res.redirect('/');
+        } else {
+            //passing to ejs
+            res.render('index', {
+                listTitle: 'Today',
+                items: foundItems
+            });
+        }
+
     });
 
 });
@@ -40,17 +84,26 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
 
     //grab the value when user type
-    let item = req.body.newItem;
+    const itemName = req.body.newItem;
 
-    if (req.body.list === 'Work') {
-        workItems.push(item);
-        res.redirect('/work');
-    } else {
-        //push it to array
-        items.push(item);
-        res.redirect('/');
-    }
+    const item = new Item({
+        name: itemName
+    });
 
+    item.save();
+
+    res.redirect('/');
+});
+
+app.post('/delete', (req, res) => {
+    const checkedItemId = req.body.checkbox;
+
+    Item.findByIdAndRemove(checkedItemId, (err) => {
+        if(!err) {
+            console.log('Succesfully deleted checked item.');
+            res.redirect('/');
+        }
+    });
 });
 
 app.get('/work', (req, res) => {
